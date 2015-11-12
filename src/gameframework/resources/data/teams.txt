@@ -1,0 +1,4 @@
+France, fr, Joseph Joffre, BLUE
+Germany, ger, Helmuth von Moltke, VIOLET
+Austria-Hungary, aus_hun, Franz von Hotzendorf, RED
+Russian Empire, rus, Nikolay II, GREEN
