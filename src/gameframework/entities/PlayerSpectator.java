@@ -85,7 +85,7 @@ public class PlayerSpectator {
         }
 
         if (Framework.activeGame().getClass().getSimpleName().equals("StrategicMode")) {
-            if ((mousePosition.x >= framework.getFrameWidth() - Window.getWindowBorderSizeX())
+            if ((mousePosition.x >= framework.getFrameWidth() - 8)
                     && (getX() + 16 <= Framework.activeGame().getMapSizeX() - Framework.activeGame().getWINDOW_OFFSET_X()
                             - Framework.activeGame().getWINDOW_SIZE_X())) {
                 setX(getX() + 16);
@@ -97,7 +97,7 @@ public class PlayerSpectator {
             if ((mousePosition.y <= 0) && (getY() + Framework.activeGame().getWINDOW_OFFSET_Y() - 16 >= 0)) {
                 setY(getY() - 16);
             }
-            if ((mousePosition.y >= framework.getFrameHeight() - Window.getWindowBorderSizeY())
+            if ((mousePosition.y >= framework.getFrameHeight() - 8)
                     && (getY() + 16 <= Framework.activeGame().getMapSizeY() - Framework.activeGame().getWINDOW_OFFSET_Y()
                             - Framework.activeGame().getWINDOW_SIZE_Y())) {
                 setY(getY() + 16);

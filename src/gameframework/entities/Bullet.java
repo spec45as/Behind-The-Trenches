@@ -26,7 +26,7 @@ public class Bullet extends Entity {
         setDirectionAndSpeed(targetPos);
     }
 
-    private void setDirectionAndSpeed(Vector targetPos) {
+    private void setDirectionAndSpeed(VectorLight targetPos) {
         // Unit direction vector of the bullet.
         double directionVx = targetPos.x - this.GetPos().x;
         double directionVy = targetPos.y - this.GetPos().y;
@@ -44,7 +44,7 @@ public class Bullet extends Entity {
     }
 
     public boolean isItLeftScreen() {
-        Vector modelPos = this.GetPos();
+        VectorLight modelPos = this.GetPos();
         if (modelPos.x > 0 && modelPos.x < Framework.activeGame().getMapSizeX() && modelPos.y > 0
                 && modelPos.y < Framework.activeGame().getMapSizeY())
             return false;
@@ -64,8 +64,8 @@ public class Bullet extends Entity {
     public void Draw(Graphics2D g2d) {
         if (Framework.activeGame().getPlayerCamera().canSeeSprite((int) GetPos().x, (int) GetPos().y, 1, 1)) {
 
-            Vector modelPos = GetPos();
-            BufferedImage bulletImg = gameframework.Framework.activeGame().gameResources.rifleBullet;
+            VectorLight modelPos = GetPos();
+            BufferedImage bulletImg = gameframework.Framework.activeGame().getGameResources().rifleBullet;
             double locationX = bulletImg.getWidth() / 2;
             double locationY = bulletImg.getHeight() / 2;
             AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);

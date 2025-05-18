@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,80 +85,108 @@ public class Resources {
         return mapTexturesGrassCover.get(index);
 
     }
+    private void dumpFolder(File dir, int indent) {
+        if (!dir.exists()) {
+            System.out.println("".repeat(indent) + dir + " DOES NOT EXIST");
+            return;
+        }
+        System.out.println("".repeat(indent) + dir.getName() + "/");
+        for (File f : dir.listFiles()) {
+            if (f.isDirectory()) dumpFolder(f, indent+2);
+            else System.out.println("".repeat(indent+2) + f.getName());
+        }
+    }
+
+    private final File texturesRoot = new File(System.getProperty("user.dir"), "resources/images");
 
     public Resources() {
-        File imagesFolder = new File(this.getClass().getResource("/").getFile());
-
+        File imagesFolder = new File(System.getProperty("user.dir"), "resources");
+        loadTextureFolder(texturesRoot);
         try {
-            File jarImagesFolder = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-            if (jarImagesFolder.getName().substring(jarImagesFolder.getName().length() - 4, jarImagesFolder.getName().length())
-                    .equals(".jar")) {
+            // путь к JAR или к папке с классами
+            File codeSource = new File(
+                    this.getClass()
+                            .getProtectionDomain()
+                            .getCodeSource()
+                            .getLocation()
+                            .toURI()
+                            .getPath()
+            );
 
-                JarDirLoader.LoadAllPNG(jarImagesFolder.getAbsolutePath(), allTextures);
-                JarDirLoader.LoadAllTXT(jarImagesFolder.getAbsolutePath(), allTxts);
 
+            // корень classpath (куда IDEA скопировала resources/)
+            URL rootUrl = this.getClass().getResource("/");
+
+            if (codeSource.isFile() && codeSource.getName().endsWith(".jar")) {
+                // если запускаем из JAR — сканируем его
+                JarDirLoader.LoadAllPNG(codeSource.getAbsolutePath(), allTextures);
+                JarDirLoader.LoadAllTXT(codeSource.getAbsolutePath(), allTxts);
+            } else {
+                // если запускаем из IDEA / из папки classes — рекурсивно обходим resources
+//                loadTextureFolder(imagesFolder);
+                loadTxtFolder(imagesFolder);
             }
         } catch (Exception e) {
-            loadTextureFolder(imagesFolder);
+            // на всякий случай (например, проблемы с URI)
+//            loadTextureFolder(imagesFolder);
             loadTxtFolder(imagesFolder);
-
         }
 
         URL modelUrl;
         try {
             for (int i = 1; i <= 28; i++) {
-                modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/human/uk/death/death_up_" + i + ".png");
+                modelUrl = this.getClass().getResource("/images/objects/human/uk/death/death_up_" + i + ".png");
                 uk_sold_up_deaths.add(ImageIO.read(modelUrl));
             }
             for (int i = 1; i <= 28; i++) {
-                modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/human/ger/death/death_up_" + i + ".png");
+                modelUrl = this.getClass().getResource("/images/objects/human/ger/death/death_up_" + i + ".png");
                 ger_sold_up_deaths.add(ImageIO.read(modelUrl));
             }
             for (int i = 1; i <= 5; i++) {
-                modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/human/uk/death/death_down_" + i + ".png");
+                modelUrl = this.getClass().getResource("/images/objects/human/uk/death/death_down_" + i + ".png");
                 uk_sold_down_deaths.add(ImageIO.read(modelUrl));
             }
             for (int i = 1; i <= 5; i++) {
-                modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/human/ger/death/death_down_" + i + ".png");
+                modelUrl = this.getClass().getResource("/images/objects/human/ger/death/death_down_" + i + ".png");
                 ger_sold_down_deaths.add(ImageIO.read(modelUrl));
             }
 
             for (int i = 1; i <= 3; i++) {
-                modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/human/blood/blood_" + i + ".png");
+                modelUrl = this.getClass().getResource("/images/objects/human/blood/blood_" + i + ".png");
                 playerBloodImages.add(ImageIO.read(modelUrl));
             }
 
             for (int i = 0; i <= 2; i++) {
-                modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/tree/tree_broken_" + i + ".png");
+                modelUrl = this.getClass().getResource("/images/objects/tree/tree_broken_" + i + ".png");
                 brokenTrees.add(ImageIO.read(modelUrl));
             }
 
             for (int i = 0; i <= 2; i++) {
-                modelUrl = this.getClass().getResource("/gameframework/resources/images/terrarin/explosions/explosion_" + i + ".png");
+                modelUrl = this.getClass().getResource("/images/terrarin/explosions/explosion_" + i + ".png");
                 artExplosions.add(ImageIO.read(modelUrl));
             }
 
             for (int i = 0; i <= 15; i++) {
-                modelUrl = this.getClass().getResource("/gameframework/resources/images/terrarin/grass/grass_" + i + ".png");
+                modelUrl = this.getClass().getResource("/images/terrarin/grass/grass_" + i + ".png");
                 mapTexturesGrassCover.add(ImageIO.read(modelUrl));
             }
 
             for (int i = 0; i <= 15; i++) {
-                modelUrl = this.getClass().getResource("/gameframework/resources/images/terrarin/trenches/grass_" + i + ".png");
+                modelUrl = this.getClass().getResource("/images/terrarin/trenches/grass_" + i + ".png");
                 mapTrenchesCover.add(ImageIO.read(modelUrl));
             }
 
-            modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/weapon/bullet.png");
+            modelUrl = this.getClass().getResource("/images/objects/weapon/bullet.png");
             rifleBullet = ImageIO.read(modelUrl);
 
-            modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/weapon/bullet_flash.png");
+            modelUrl = this.getClass().getResource("/images/objects/weapon/bullet_flash.png");
             rifleBulletFlash = ImageIO.read(modelUrl);
 
-            modelUrl = this.getClass().getResource("/gameframework/resources/images/terrarin/dirt.png");
+            modelUrl = this.getClass().getResource("/images/terrarin/dirt.png");
             mapTextures.add(ImageIO.read(modelUrl));
             mapDirt = ImageIO.read(modelUrl);
 
-            modelUrl = this.getClass().getResource("/gameframework/resources/images/fx/aim_cursor.png");
+            modelUrl = this.getClass().getResource("/images/fx/aim_cursor.png");
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             aimCursor = toolkit.createCustomCursor(ImageIO.read(modelUrl), new Point(0, 0), "img");
             normalCursor = new Cursor(Cursor.DEFAULT_CURSOR);
@@ -167,13 +196,13 @@ public class Resources {
             noCursor = blankCursor;
 
             // mortar
-            modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/weapon/mortar_shell.png");
+            modelUrl = this.getClass().getResource("/images/objects/weapon/mortar_shell.png");
             mortarShell = ImageIO.read(modelUrl);
-            modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/weapon/mortar_flash.png");
+            modelUrl = this.getClass().getResource("/images/objects/weapon/mortar_flash.png");
             mortarShellFlash = ImageIO.read(modelUrl);
-            modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/weapon/mortar_explosion.png");
+            modelUrl = this.getClass().getResource("/images/objects/weapon/mortar_explosion.png");
             mortarShellExplosion = ImageIO.read(modelUrl);
-            modelUrl = this.getClass().getResource("/gameframework/resources/images/objects/weapon/mortar_explosion_decale.png");
+            modelUrl = this.getClass().getResource("/images/objects/weapon/mortar_explosion_decale.png");
             mortarExplosionSprite = ImageIO.read(modelUrl);
 
         } catch (IOException e) {
@@ -182,55 +211,63 @@ public class Resources {
 
         try {
             for (int i = 1; i <= 3; i++) {
-                mainMenuMusic.add(this.getClass().getResource("/gameframework/resources/sounds/music/menu_" + i + ".mp3"));
+                mainMenuMusic.add(this.getClass().getResource("/sounds/music/menu_" + i + ".mp3"));
             }
 
-            menu_selection = this.getClass().getResource("/gameframework/resources/sounds/fx/menu_selection.wav");
+            menu_selection = this.getClass().getResource("/sounds/fx/menu_selection.wav");
 
-            weapon_enfield_shoot = this.getClass().getResource("/gameframework/resources/sounds/weapons/enfield/enfield.wav");
-            weapon_enfield_reload = this.getClass().getResource("/gameframework/resources/sounds/weapons/enfield/enfield_reload.wav");
+            weapon_enfield_shoot = this.getClass().getResource("/sounds/weapons/enfield/enfield.wav");
+            weapon_enfield_reload = this.getClass().getResource("/sounds/weapons/enfield/enfield_reload.wav");
 
-            weapon_mortar_shoot = this.getClass().getResource("/gameframework/resources/sounds/weapons/mortar_small/mortar_shoot.wav");
+            weapon_mortar_shoot = this.getClass().getResource("/sounds/weapons/mortar_small/mortar_shoot.wav");
 
             for (int i = 1; i <= 5; i++) {
                 weapon_lewis_burst.add(this.getClass().getResource(
-                        "/gameframework/resources/sounds/weapons/lewis_burst/lewis_0" + i + ".wav"));
+                        "/sounds/weapons/lewis_burst/lewis_0" + i + ".wav"));
             }
 
             for (int i = 1; i <= 3; i++) {
-                playerWoundsAudio.add(this.getClass().getResource("/gameframework/resources/sounds/wounds/" + i + ".wav"));
+                playerWoundsAudio.add(this.getClass().getResource("/sounds/wounds/" + i + ".wav"));
             }
 
             for (int i = 1; i <= 4; i++) {
                 playerMortarExplosionsAudio.add(this.getClass().getResource(
-                        "/gameframework/resources/sounds/weapons/mortar_small/explosion/0" + i + ".wav"));
+                        "/sounds/weapons/mortar_small/explosion/0" + i + ".wav"));
             }
 
             for (int i = 1; i <= 26; i++) {
-                hitSmallGround.add(this.getClass().getResource("/gameframework/resources/sounds/hit/small/ground/hit-" + i + ".wav"));
+                hitSmallGround.add(this.getClass().getResource("/sounds/hit/small/ground/hit-" + i + ".wav"));
             }
             for (int i = 1; i <= 15; i++) {
-                hitSmallMetal.add(this.getClass().getResource("/gameframework/resources/sounds/hit/small/metal/hit-" + i + ".wav"));
+                hitSmallMetal.add(this.getClass().getResource("/sounds/hit/small/metal/hit-" + i + ".wav"));
             }
             for (int i = 1; i <= 10; i++) {
-                hitSmallWood.add(this.getClass().getResource("/gameframework/resources/sounds/hit/small/wood/hit-" + i + ".wav"));
+                hitSmallWood.add(this.getClass().getResource("/sounds/hit/small/wood/hit-" + i + ".wav"));
             }
 
             // HUMAN UK
             for (int i = 1; i <= 11; i++) {
-                humanUkAttackSound.add(this.getClass().getResource("/gameframework/resources/sounds/human/uk/attack/attack-" + i + ".wav"));
+                humanUkAttackSound.add(this.getClass().getResource("/sounds/human/uk/attack/attack-" + i + ".wav"));
             }
             for (int i = 1; i <= 7; i++) {
-                humanUkMoveSound.add(this.getClass().getResource("/gameframework/resources/sounds/human/uk/move/move-" + i + ".wav"));
+                humanUkMoveSound.add(this.getClass().getResource("/sounds/human/uk/move/move-" + i + ".wav"));
             }
             for (int i = 1; i <= 9; i++) {
-                humanUkPainSound.add(this.getClass().getResource("/gameframework/resources/sounds/human/uk/pain/pain-" + i + ".wav"));
+                humanUkPainSound.add(this.getClass().getResource("/sounds/human/uk/pain/pain-" + i + ".wav"));
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println(">>> All texture keys: " + allTextures.keySet());
 
+//        System.out.println(">>> Dumping objects folder:");
+//        File objectsRoot = new File(System.getProperty("user.dir"), "resources/images/objects");
+//        dumpFolder(objectsRoot, 2);
+
+        System.out.println(">>> Loaded object-texture keys:");
+        allTextures.keySet().stream()
+                .forEach(k -> System.out.println("   - " + k));
     }
 
     public BufferedImage getTexture(String textureName) {
@@ -271,24 +308,25 @@ public class Resources {
         }
     }
 
-    private void loadTextureFolder(File f) {
+    /** Рекурсивно обходит папку и загружает PNG-файлы */
+    private void loadTextureFolder(File dir) {
+        File[] files = dir.listFiles();
+        if (files == null) return;
 
-        if (f.exists()) {
-            String[] files = f.list();
-            for (int i = 0; i < files.length; ++i) {
-                File currentFile = new File(f.getAbsolutePath() + System.getProperty("file.separator") + files[i]);
-                if (currentFile.isDirectory()) {
-                    loadTextureFolder(currentFile);
-                    continue;
-                }
+        for (File f : files) {
+            if (f.isDirectory()) {
+                loadTextureFolder(f);
+            }
+            else if (f.getName().toLowerCase().endsWith(".png")) {
                 try {
-                    if (currentFile.getName().substring(currentFile.getName().length() - 4, currentFile.getName().length()).equals(".png")) {
-
-                        String folderName = new File(currentFile.getParent()).getName();
-                        allTextures.put(folderName + "/" + currentFile.getName(), ImageIO.read(currentFile));
-                    }
-                } catch (IOException e) {
-                }
+                    // получаем имя родительской папки
+                    String folderName = f.getParentFile().getName();
+                    // ключ — "lastFolder/fileName.png"
+                    String key = folderName + "/" + f.getName();
+                    BufferedImage img = ImageIO.read(f);
+                    allTextures.put(key, img);
+                    System.out.println("Loaded texture under key → '" + key + "'");
+                } catch (IOException ignored) {}
             }
         }
     }

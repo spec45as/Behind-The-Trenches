@@ -1,27 +1,29 @@
 package gameframework;
 
 import java.awt.Frame;
+import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class Window extends JFrame {
     private static final long serialVersionUID = -6017798704092079083L;
     private static final int WINDOW_SIZE_X = 1024;
-    private static final int WINDOW_SIZE_Y = 640;
+    private static final int WINDOW_SIZE_Y = 1024;
     private static final int WINDOW_BORDER_SIZE_X = 8;
     private static final int WINDOW_BORDER_SIZE_Y = 31;
 
     @SuppressWarnings("unused")
     Window() {
         this.setTitle("Behind The Trenches [Tech. Demo]");
-        if (true) // Fullscreen
+        if (false) // Fullscreen
         {
             this.setUndecorated(true);
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else // Window
         {
-            this.setSize(1350, 768);
+            this.setSize(WINDOW_SIZE_X, WINDOW_SIZE_Y);
             this.setLocationRelativeTo(null);
             this.setResizable(false);
         }
@@ -35,6 +37,7 @@ public class Window extends JFrame {
     }
 
     public static void main(String[] args) {
+        System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override

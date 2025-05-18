@@ -65,8 +65,8 @@ public class BattleMode extends Gamemode {
 
     public static final int DIRT_SPRITE_SIZE = 32;
     public static final int SPRITE_SIZE = 32;
-    private final int mapSizeX = 2048;
-    private final int mapSizeY = 2048;
+    private final int mapSizeX = 2048*2;
+    private final int mapSizeY = 2048*4;
 
     private final int playerZoneX = 2048;
     private final int playerZoneY = 2048;

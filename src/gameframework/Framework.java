@@ -76,7 +76,7 @@ public class Framework extends Canvas {
 
     private void LoadContent() {
         try {
-            URL menuBorderImgUrl = this.getClass().getResource("/gameframework/resources/images/menubackground.png");
+            URL menuBorderImgUrl = this.getClass().getResource("/images/menubackground.png");
             menubackground = ImageIO.read(menuBorderImgUrl);
 
         } catch (IOException ex) {

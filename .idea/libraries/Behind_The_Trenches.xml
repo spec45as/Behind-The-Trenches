@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Behind-The-Trenches">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/trove4j-2.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/slf4j-api-1.6.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jsi-1.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

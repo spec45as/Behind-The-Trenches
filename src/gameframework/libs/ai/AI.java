@@ -275,14 +275,22 @@ public class AI {
             shootTarget = null;
         }
 
-        if (shootTarget != null && !((Human) shootTarget).IsAlive()) {
-            nextAiThink = 1000;
-            shootTarget = null;
+        if (shootTarget != null) {
+            if (shootTarget instanceof Human) {
+                if (!((Human) shootTarget).IsAlive()) {
+                    nextAiThink = 1000;
+                    shootTarget = null;
+                }
+            }
         }
 
-        if (meleeTarget != null && !((Human) meleeTarget).IsAlive()) {
-            nextAiThink = 1000;
-            meleeTarget = null;
+        if (meleeTarget != null) {
+            if (meleeTarget instanceof Human) {
+                if (!((Human) meleeTarget).IsAlive()) {
+                    nextAiThink = 1000;
+                    meleeTarget = null;
+                }
+            }
         }
 
         if (weaponBehavior.equals("rifle_only")) {
@@ -448,7 +456,7 @@ public class AI {
         }
 
         boolean fastSearch = false;
-        boolean nearestSearch = true;// true;
+        boolean nearestSearch = false;// true;
         boolean advancedAi = false;
         if (fastSearch && advancedAi) {
             Entity target = Framework.activeGame().getAiTargetingMap().getOneTargetInSectors(human, maxDist);
